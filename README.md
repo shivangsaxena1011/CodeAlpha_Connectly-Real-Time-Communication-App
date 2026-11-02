@@ -1,5 +1,7 @@
 # Connectly — Real-Time Communication & Social Media Web Platform
 
+[![Live Demo](https://img.shields.io/badge/Live_Demo-onrender.com-success?style=for-the-badge&logo=render&logoColor=white)](https://connectly-real-time-communication-app.onrender.com/)
+
 ![Django](https://img.shields.io/badge/Django-5.0%2B-092E20?style=for-the-badge&logo=django&logoColor=white)
 ![Django Channels](https://img.shields.io/badge/Django_Channels-4.0%2B-25D366?style=for-the-badge&logo=websocket&logoColor=white)
 ![Daphne](https://img.shields.io/badge/ASGI-Daphne-4A154B?style=for-the-badge&logo=fastapi&logoColor=white)
