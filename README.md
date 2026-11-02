@@ -1,7 +1,6 @@
-# Connectly — Real-Time Communication & Social Media Web Platform
+# Connectly — Real-Time Communication & Collaboration Platform
 
 [![Live Demo](https://img.shields.io/badge/Live_Demo-onrender.com-success?style=for-the-badge&logo=render&logoColor=white)](https://connectly-real-time-communication-app.onrender.com/)
-
 ![Django](https://img.shields.io/badge/Django-5.0%2B-092E20?style=for-the-badge&logo=django&logoColor=white)
 ![Django Channels](https://img.shields.io/badge/Django_Channels-4.0%2B-25D366?style=for-the-badge&logo=websocket&logoColor=white)
 ![Daphne](https://img.shields.io/badge/ASGI-Daphne-4A154B?style=for-the-badge&logo=fastapi&logoColor=white)
@@ -9,15 +8,18 @@
 ![Python](https://img.shields.io/badge/Python-3.11%2B-3776AB?style=for-the-badge&logo=python&logoColor=white)
 ![License](https://img.shields.io/badge/License-MIT-blue?style=for-the-badge)
 
-**Connectly** is a production-grade, full-stack social communication platform uniting traditional social media feeds with real-time direct messaging, live presence detection, dynamic typing indicators, and hybrid binary file & media attachments powered by **Django Channels**, **Daphne**, and **WebSockets**.
+A full-stack, real-time communication and social collaboration platform designed for students, project teams, and modern community circles.
 
-Designed with modern aesthetic principles using **Tailwind CSS**, **Plus Jakarta Sans**, and **Material Symbols**, Connectly delivers a lightweight, lightning-fast, and responsive user experience.
+Connectly seamlessly unites persistent social discourse (feeds, community posts, like/comment engines, social graphs) with bidirectional real-time direct messaging, live presence detection, dynamic typing indicators, and an optimized hybrid file attachment pipeline powered by **Django Channels**, **Daphne ASGI**, and **WebSockets**.
+
+**Organization:** CodeAlpha  
+**Live Production URL:** [https://connectly-real-time-communication-app.onrender.com/](https://connectly-real-time-communication-app.onrender.com/)
 
 ---
 
-## 📑 Architecture & Technical Blueprints
+## 📑 Technical Architecture & Blueprints
 
-Connectly is architected according to strict modern web specifications. Complete visual infographics and technical blueprints are preserved in the [`docs/`](docs/) directory:
+Connectly has been engineered according to comprehensive visual specifications and blueprints preserved in [`docs/`](docs/):
 
 | Document / Blueprint | Description | Link |
 | :--- | :--- | :--- |
@@ -30,19 +32,33 @@ Connectly is architected according to strict modern web specifications. Complete
 
 ---
 
+## 🎯 Project Overview & Objectives
+
+Connectly is designed to streamline online communication and team collaboration by providing essential interaction and productivity tools within a unified, responsive web application.
+
+The platform demonstrates:
+- **Production-grade full-stack architecture** with Python 3, Django 5, and Daphne ASGI.
+- **Low-latency bidirectional WebSockets** via Django Channels for instant real-time message routing.
+- **Optimized hybrid transfer pattern** for file and media attachments (< 15MB) preventing WebSocket head-of-line blocking.
+- **Robust relational data modeling** with SQLite for zero-dependency local development and production readiness.
+- **Strict access control and authorization guards** ensuring private conversation isolation and ownership enforcement.
+- **Automated testing** with an asynchronous Channels test suite covering WebSockets, model constraints, and uploads.
+
+---
+
 ## 🌟 Key Features
 
-### 1. 👥 Accounts & Social Graph (`accounts/`)
-- **Secure Authentication**: User registration, session login, password encryption, and secure logout.
-- **Custom Profiles**: User avatars (with automated Pillow validation), bios, location, and member timestamps.
-- **Signal Automation**: Django `post_save` signals automatically create and maintain profile records on User creation.
-- **Follow / Unfollow Engine**: Asynchronous follow/unfollow toggle with database-level uniqueness constraints and self-follow prevention.
+### 1. 👥 User Authentication & Social Graph (`accounts/`)
+- **User Registration & Login**: Built-in authentication with encrypted password hashing and session management.
+- **Automated Profile Lifecycle**: Django `post_save` signals automatically provision user profiles with avatars, bios, and location.
+- **Follow / Unfollow Engine**: Asynchronous follow toggle backed by database-level uniqueness constraints and self-follow prevention.
+- **Protected Application Routes**: `@login_required` decorators and session validation protecting all sensitive interaction endpoints.
 
-### 2. 📰 Dynamic Feed & Discussions (`feed/`)
-- **Rich Post Creation**: Text posts and image attachments with client-side previews and file size constraints (< 8MB).
-- **Asynchronous Interactions**: Instant Like/Unlike toggle and comment publishing powered by vanilla JS and AJAX CSRF handling without page reloads.
-- **Explore & Discovery**: Live search and trend exploration across users, handles, and discussion threads.
-- **Author Permissions**: Guarded edit and delete permissions enforcing author ownership.
+### 2. 📰 Dynamic Feed & Community Discussions (`feed/`)
+- **Interactive Post Creator**: Supports text updates and validated image uploads with file size constraints (< 8MB).
+- **Asynchronous Reactions**: Instant Like/Unlike toggle and comment publishing powered by Vanilla JS and AJAX CSRF handling without page reloads.
+- **Explore & Discovery**: Live query search across member profiles, usernames, and trending discussion topics.
+- **Author Permissions**: Guarded edit and delete actions enforcing strict author ownership.
 
 ### 3. 💬 Real-Time WebSockets & Direct Messaging (`chat/`)
 - **Bidirectional WebSockets**: Low-latency communication via `AsyncWebsocketConsumer` and ASGI URL routing (`/ws/chat/<room_id>/`).
@@ -51,11 +67,33 @@ Connectly is architected according to strict modern web specifications. Complete
 - **Read Receipts & Unread Badges**: Real-time unread message counters updated dynamically across conversations.
 
 ### 4. 📎 Optimized Hybrid Attachment Handling
-Transferring multi-megabyte binary payloads directly over WebSockets causes head-of-line blocking and channel layer memory saturation. Connectly implements an **Optimized Hybrid Transfer Pattern**:
-1. **Client Staging**: Drag-and-drop or file selection triggers instantaneous local thumbnail previews and size inspection (< 15MB limit).
+Transferring binary files directly over WebSockets can cause head-of-line blocking and memory saturation in channel layers. Connectly implements an **Optimized Hybrid Transfer Pattern**:
+1. **Client Staging & Drag-and-Drop**: Users can browse or drag and drop files directly onto the chat window with instantaneous thumbnail previews and size inspection (< 15MB).
 2. **HTTP POST Multipart Upload**: Files are transmitted asynchronously via AJAX to `/chat/<room_id>/upload/`.
 3. **Storage & Validation**: Safe file classification (image thumbnails vs. downloadable documents with badges) and database persistence.
 4. **Channels Broadcast**: The server triggers a lightweight WebSocket event to the room's Channel Layer, instantly rendering formatted message bubbles and download links on both endpoints.
+
+### 5. 🛡️ Security Features
+- **XSS Sanitization**: Dynamic HTML escaping in JavaScript preventing script injection in user content and filenames.
+- **CSRF Protection**: Integrated Django CSRF tokens across all standard forms and AJAX requests (`X-CSRFToken`).
+- **Secure Session Cookies**: HTTP-only cookies preventing client-side script tampering.
+- **File Upload Safeguards**: MIME-type classification, size caps, and filename path traversal normalization (`os.path.basename`).
+- **Participant Authorization**: Strict validation in both HTTP views and WebSocket connection handshakes rejecting unauthorized non-participants.
+
+---
+
+## 🛠️ Technology Stack
+
+| Layer | Technologies |
+| :--- | :--- |
+| **Frontend** | HTML5, CSS3, Vanilla JavaScript (ES6+), Tailwind CSS, Material Symbols, Plus Jakarta Sans |
+| **Backend Framework** | Django 5.x (Python 3.11+) |
+| **ASGI & WebSockets** | Django Channels 4.x, Daphne ASGI Server |
+| **Channel Layer** | In-Memory Channel Layer (local / dev) & Redis Channel Layer (production) |
+| **Database & ORM** | SQLite (default development) / PostgreSQL ready |
+| **Static & Media Asset Delivery** | WhiteNoise with Brotli & Gzip compression, Pillow (image processing) |
+| **Testing Suite** | Django Test Framework, Channels `WebsocketCommunicator`, unittest |
+| **Deployment & Hosting** | Render (Docker & Native Python runtime), Procfile, Dockerfile |
 
 ---
 
@@ -65,7 +103,12 @@ Transferring multi-megabyte binary payloads directly over WebSockets causes head
 Connectly/
 ├── manage.py
 ├── requirements.txt
+├── Procfile                              # ASGI process runner for Daphne
+├── Dockerfile                            # Production container build
+├── render.yaml                           # 1-click cloud blueprint
+├── build.sh                              # Deployment build & migration script
 ├── .gitignore
+├── LICENSE
 ├── README.md
 ├── docs/                                 # Architectural infographics & blueprints
 │   ├── Connectly Implementation Roadmap.png
@@ -77,7 +120,7 @@ Connectly/
 ├── connectly/                            # Project configuration root
 │   ├── __init__.py
 │   ├── asgi.py                           # ProtocolTypeRouter (HTTP + WebSockets)
-│   ├── settings.py                       # Channel layer, Daphne, and app settings
+│   ├── settings.py                       # Channel layers, WhiteNoise, and auth settings
 │   ├── urls.py                           # Root URL routing
 │   └── wsgi.py
 ├── accounts/                             # Authentication, Profiles & Social Graph
@@ -133,9 +176,13 @@ Connectly/
 
 ---
 
-## 🚀 Quickstart Guide
+## 🚀 Installation & Local Setup
 
-### 1. Clone the Repository & Enter Workspace
+### Prerequisites
+- Python 3.11+
+- Git
+
+### 1. Clone the Repository
 ```bash
 git clone https://github.com/shivangsaxena1011/Connectly-Real-Time-Communication-App.git
 cd Connectly-Real-Time-Communication-App
@@ -152,7 +199,7 @@ python -m venv venv
 # macOS / Linux:
 source venv/bin/activate
 
-# Install required packages
+# Install required dependencies
 pip install -r requirements.txt
 ```
 
@@ -163,7 +210,7 @@ python manage.py migrate
 ```
 
 ### 4. Seed Demo Content & Test Users
-Connectly includes a built-in seeder command that generates demo accounts (`shivang`, `ananya`, `rohan`, `priya`), mock posts, comments, likes, and follow links:
+Connectly includes a built-in seeder command that generates demo accounts (`shivang`, `ananya`, `rohan`, `priya`), mock posts, comments, likes, and sample conversations:
 ```bash
 python manage.py seed_data
 ```
@@ -182,7 +229,7 @@ Visit `http://127.0.0.1:8000/` in your browser.
 
 ## 🧪 Automated Testing Suite
 
-Connectly includes a comprehensive test suite covering authentication, social graph operations, post access control, WebSocket communication, participant authorization, and file upload restrictions.
+Connectly includes a comprehensive test suite covering authentication, social graph operations, post access control, WebSocket communication, participant authorization, search queries, and file upload restrictions.
 
 Run all tests:
 ```bash
@@ -192,9 +239,9 @@ python manage.py test
 Expected output:
 ```text
 Creating test database for alias 'default'...
-................
+..................
 ----------------------------------------------------------------------
-Ran 16 tests in ~25s
+Ran 18 tests in ~16s
 
 OK
 Destroying test database for alias 'default'...
@@ -202,34 +249,42 @@ Destroying test database for alias 'default'...
 
 ---
 
-## ⚙️ Production Deployment Notes
+## 🎓 Learning Outcomes
 
-1. **Redis Channel Layer**:
-   In production, swap the development in-memory channel layer for Redis in `connectly/settings.py`:
-   ```python
-   CHANNEL_LAYERS = {
-       'default': {
-           'BACKEND': 'channels_redis.core.RedisChannelLayer',
-           'CONFIG': {
-               "hosts": [("127.0.0.1", 6379)],
-           },
-       },
-   }
-   ```
-2. **Reverse Proxy Configuration**:
-   When using **Nginx** in front of **Daphne**, ensure WebSocket upgrade headers are forwarded:
-   ```nginx
-   location /ws/ {
-       proxy_pass http://127.0.0.1:8000;
-       proxy_http_version 1.1;
-       proxy_set_header Upgrade $http_upgrade;
-       proxy_set_header Connection "upgrade";
-       proxy_set_header Host $host;
-       proxy_set_header X-Real-IP $remote_addr;
-   }
-   ```
+Through this project, key competencies developed include:
+- Designing and implementing full-stack real-time web applications with Python & Django.
+- Architecting asynchronous event-driven pipelines using **Django Channels**, **Daphne**, and **WebSockets**.
+- Designing relational data models with custom constraints, foreign key indexes, and signal handlers.
+- Structuring hybrid transfer protocols for file uploads to eliminate WebSocket head-of-line blocking.
+- Securing real-time applications with CSRF validation, XSS escaping, and authorization middleware.
+- Configuring cloud-native deployment pipelines with WhiteNoise, Procfile, Dockerfile, and Render blueprints.
+
+---
+
+## 🔮 Future Enhancements
+
+- **Peer-to-Peer Video & Audio**: WebRTC integration with STUN/TURN signaling over Django Channels.
+- **Collaborative Whiteboard**: Synchronized canvas drawing with persistent snapshots.
+- **Group Channels & Circles**: Multi-participant rooms with administrative roles and channel permissions.
+- **End-to-End Encryption (E2EE)**: Client-side cryptographic message encryption.
+- **Message Search & Rich Text**: Full-text message indexing and Markdown formatting.
+
+---
+
+## 🌐 Production Deployment
+
+The project is deployed and actively hosted on **Render**:
+- **Live URL:** [https://connectly-real-time-communication-app.onrender.com/](https://connectly-real-time-communication-app.onrender.com/)
+- Automatic CI/CD is enabled via GitHub on the `main` branch.
+
+---
+
+## 👥 Acknowledgements
+
+Special thanks to **CodeAlpha** for the project mentorship and guidelines.
 
 ---
 
 ## 📜 License
-Distributed under the MIT License. See `LICENSE` for more information.
+
+This project is licensed under the MIT License — see the [`LICENSE`](LICENSE) file for details.
