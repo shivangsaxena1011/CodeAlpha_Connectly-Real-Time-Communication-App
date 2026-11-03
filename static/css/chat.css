@@ -315,7 +315,8 @@
 /* Mobile Viewport Optimizations */
 @media (max-width: 640px) {
   .chat-container {
-    height: calc(100vh - 75px);
+    height: calc(100dvh - 70px);
+    height: calc(100vh - 70px);
     margin: 0;
     border-radius: 0;
     border-left: none;
