@@ -311,3 +311,45 @@
   border-color: #4f46e5 !important;
   background-color: #eef2ff !important;
 }
+
+/* Mobile Viewport Optimizations */
+@media (max-width: 640px) {
+  .chat-container {
+    height: calc(100vh - 75px);
+    margin: 0;
+    border-radius: 0;
+    border-left: none;
+    border-right: none;
+    border-bottom: none;
+  }
+
+  .chat-header {
+    padding: 0.65rem 0.85rem;
+  }
+
+  .messages-stream {
+    padding: 0.75rem 0.5rem;
+  }
+
+  .message-bubble-wrapper {
+    max-width: 88%;
+  }
+
+  .chat-composer {
+    padding: 0.5rem 0.75rem;
+  }
+
+  .chat-composer input {
+    font-size: 0.9rem;
+    padding: 0.55rem 0.75rem;
+  }
+
+  .chat-img-thumb {
+    max-width: 210px;
+    max-height: 170px;
+  }
+
+  .file-name {
+    max-width: 130px;
+  }
+}
